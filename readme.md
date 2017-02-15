@@ -1,7 +1,7 @@
 # Sitecore.Support.140892
 "Try Finish Test" task doesn't work for items created in languages different from English (Content Testing).
 
-The issue was fixed in Sitecore 8.1 Update 1.
+[Fixed] The bug has been fixed in Sitecore 8.1 Update-1 (rev. 151207)
 
 [![Total downloads](https://img.shields.io/github/downloads/SitecoreSupport/Sitecore.Support.140892/total.svg)](https://github.com/SitecoreSupport/Sitecore.Support.140892/releases)
 

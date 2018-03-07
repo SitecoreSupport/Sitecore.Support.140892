@@ -1,11 +1,15 @@
 ﻿namespace Sitecore.Support.ContentTesting.Tasks
 {
     using Sitecore.ContentTesting;
+    using Sitecore.ContentTesting.ContentSearch;
     using Sitecore.ContentTesting.Data;
     using Sitecore.ContentTesting.Diagnostics;
     using Sitecore.ContentTesting.Intelligence;
     using Sitecore.ContentTesting.Model.Data.Items;
+    using Sitecore.Data;
+    using Sitecore.Data.Items;
     using System;
+    using System.Linq;
 
     public class TryFinishTest
     {
@@ -33,18 +37,28 @@
             {
                 return;
             }
+
+            #region Added code
+            ITestingSearch testingSearch = ContentTestingFactory.Instance.TestingSearch;
+            testingSearch.Start = DateTimeOffset.MinValue.UtcDateTime;
+            testingSearch.End = DateTimeOffset.MaxValue.UtcDateTime;
+            Database db = schedule.Database;
+            #endregion
+
             this.SetPropertiesFromItem(command);
             IntelligenceService intelligenceService = new IntelligenceService();
-            for (int i = 0; i < items.Length; i++)
+
+            #region Modified code
+            foreach (Item item in from x in testingSearch.GetRunningTests() select db.GetItem(x.Uri.ToDataUri()))
+            #endregion
             {
-                Sitecore.Data.Items.Item item = items[i];
                 try
                 {
                     TestDefinitionItem testDefinitionItem = new TestDefinitionItem(item);
                     if (string.IsNullOrEmpty(testDefinitionItem.WinnerCombination))
                     {
-                        Sitecore.Data.Database database = item.Database;
-                        if (database.GetItem(new Sitecore.Data.DataUri(testDefinitionItem.ContentItem)) != null)
+                        Sitecore.Data.Database database = item.Database;                        
+                        if (database.GetItem(new Sitecore.Data.DataUri(testDefinitionItem.ContentItem)) != null)                             
                         {
                             if (this.UpdateTestStatistics)
                             {
